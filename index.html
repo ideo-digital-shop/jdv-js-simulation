@@ -84,7 +84,7 @@
 			lights[i] = new Array(i);
 		}
 
-		var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xfff, transparent: true, opacity: 1});
+		var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, transparent: true, opacity: 1});
 
 
 	    for(var i=0;i<10;i++){
@@ -99,6 +99,9 @@
 
 	  		}
 	 	}	
+
+	 	var ambientLight = new THREE.AmbientLight(0xffffff);
+      	scene.add(ambientLight);
 
       }
 
@@ -118,9 +121,9 @@
 	     	for(var j=0;j<10;j++){
 			    
 			    spheres[i][j].position.z = 100*Math.sin((j+1)*dtime/3000);
-	  			brightness[i][j] = 1;//Math.abs(spheres[i][j].position.z) / 10;
+	  			brightness[i][j] = Math.abs(spheres[i][j].position.z) / 10;
 	  			//console.log(brightness[i][j]);
-	  			spheres[i][j].material = new THREE.MeshLambertMaterial({color: 0xfff, transparent: true, opacity: brightness[i][j]});
+	  			spheres[i][j].material = new THREE.MeshLambertMaterial({color: 0xffffff, transparent: true, opacity: brightness[i][j]});
 
 	  			//spheres[i][j] = new THREE.Mesh(new THREE.SphereGeometry(20,20,20), sphereMaterial);
 	  			//lights[i][j].position.z = spheres[i][j].position.z;
