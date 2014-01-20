@@ -1,3 +1,4 @@
+//awesome sinusoidal wave that finds harmonics
 function setPosAndLED(valueStore){
 
 	var w = valueStore.w;
@@ -20,7 +21,7 @@ function setPosAndLED(valueStore){
 			}
 			
 			valueStore.pos[x][y] = ( 1 + Math.sin((( y + 1 ) / h) * t/timeMultiplier  + ( x / w )))/ 2;
-			valueStore.led[x][y] = 0.8 * (( 1 + Math.sin ( t / (timeMultiplier / 10) + 5 * (y / h))) / 2);
+			valueStore.led[x][y] = valueStore.pos[x][y];;
 
 
 		}

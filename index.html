@@ -22,7 +22,7 @@
 	<script src="js/THREEx.FullScreen.js"></script>
 	<script src="js/THREEx.WindowResize.js"></script>
     <script src="js/Tween.js"></script>
-    <script src="js/visual_3.js"></script>
+    <script src="js/visual_5.js"></script>
     <script src="js/perlin.js"></script>
     
 
@@ -33,58 +33,122 @@
     <script defer="defer">
       
       
-      var startTime	= Date.now();
-      var camera, controls, scene, renderer;
-      var spheres;
-      var pos, led;
-      var multiplier_1;
-      var multiplier_2;
-	  var multiplier_3;
+	var startTime	= Date.now();
+	var camera, controls, scene, renderer;
+	var spheres;
+	var pos, led;
+	var multiplier_1;
+	var multiplier_2;
+	var multiplier_3;
+	var current_time;
+	var movement_stats;
+	var sphere_data = {};
 
-      // bulb radius in mm
-      var radiusSphere = 65;
-      // spacing between bulbs
-      var spacingSphere = 230;
-      // max travel length from start
-      var maxtravelSphere = 2450;
+	// bulb radius in mm
+	sphere_data.radiusSphere = 65;
+	sphere_data.spacingSphere = 230;
+	sphere_data.maxtravelSphere = 2450;
 
-      init();
-      animate();
+	var radiusSphere = 65;
+	// spacing between bulbs
+	var spacingSphere = 230;
+	// max travel length from start
+	var maxtravelSphere = 2450;
 
-		function addDatGui(){
-			var gui = new dat.GUI();
+	init();
+	animate();
 
-			 parameters = 
-        		{
-        		multiplier_1: 0.01,
-        		multiplier_2: 0.01,
-        		multiplier_3: 0.01
-        		};
+	function addDatGui(){
+		var gui = new dat.GUI();
+		gui.autoListen = true;
 
-			gui.add(camera.position, 'x', -5000,5000).step(5);
-			gui.add(camera.position, 'y', -5000,5000).step(5);
-			gui.add(camera.position, 'z', 0,10000).step(5);
-			multiplier_1 = gui.add(parameters,'multiplier_1',0.0,1.0).step(0.001);
-			multiplier_2 = gui.add(parameters,'multiplier_2',0.0,1.0).step(0.001);
-			multiplier_3 = gui.add(parameters,'multiplier_3',0.0,1.0).step(0.001);
+		 parameters = 
+			{
+			multiplier_1: 0.01,
+			multiplier_2: 0.01,
+			multiplier_3: 0.01
+			};
+		movement_stats =
+			{
+				height_max: 0.01,
+				height_min: 0.01,
+				linear_max: 0.01,
+				linear_min: 0.01
+			}
 
+		gui.add(camera.position, 'x', -5000,5000).step(5);
+		gui.add(camera.position, 'y', -5000,5000).step(5);
+		gui.add(camera.position, 'z', 0,10000).step(5);
+		multiplier_1 = gui.add(parameters,'multiplier_1',0.0,1.0).step(0.001);
+		multiplier_2 = gui.add(parameters,'multiplier_2',0.0,1.0).step(0.001);
+		multiplier_3 = gui.add(parameters,'multiplier_3',0.0,1.0).step(0.001);
+		gui.add(movement_stats,'linear_max').listen();
+		gui.add(movement_stats,'linear_min').listen();
+		gui.add(movement_stats,'height_max').listen();
+		gui.add(movement_stats,'height_min').listen();
+
+
+	}
+
+	function initSphereWorld(){
+		
+		var radius = sphere_data.radiusSphere;
+		var spacing = sphere_data.spacingSphere;
+
+		spheres = new Array(10);
+		brightness = new Array(10);
+		sphere_data.position = new Array(10);
+		sphere_data.old_position = new Array(10);
+		sphere_data.velocity = new Array(10);
+
+		pos = new Array(10);
+		led = new Array(10);
+
+		for(var i=0;i<10;i++){
+		
+			spheres[i] = new Array(i);
+			brightness[i] = new Array(i);
+			pos[i] = new Array(i);
+			led[i] = new Array(i);
+			sphere_data.position[i] = new Array(i);
+			sphere_data.old_position[i] = new Array(i);
+			sphere_data.velocity[i] = new Array(i);
+		
 		}
 
-      function init(){
+		var colorMat = new THREE.Color();
+		colorMat.setHSL(64/360,86/100,1);		
+		var sphereMaterial = new THREE.MeshBasicMaterial({color:colorMat});
+
+		for(var i=0;i<10;i++){
+			for(var j=0;j<10;j++){
+
+				spheres[i][j] = new THREE.Mesh(new THREE.SphereGeometry(radius, radius, radius), sphereMaterial);
+				brightness[i][j] = 0;
+				spheres[i][j].overdraw = true;
+				spheres[i][j].position = new THREE.Vector3((i-4)*(spacing + radius*2), (j-4)*(spacing + radius*2), 1000);
+				scene.add(spheres[i][j]);   
+
+			}
+		}	
+
+	}
+
+	function init(){
 
 		camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 		camera.position.x = 0;
 		camera.position.y = -5000;
 		camera.position.z = 1750;
-		
+
 		//scene
 		scene = new THREE.Scene();
-		
+
 		//renderer
 		if ( Detector.webgl )
-                renderer = new THREE.WebGLRenderer( {antialias:true} );
-        else
-                renderer = new THREE.CanvasRenderer(); 
+		    renderer = new THREE.WebGLRenderer( {antialias:true} );
+		else
+		    renderer = new THREE.CanvasRenderer(); 
 
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.setClearColorHex( 0x000000, 1 );
@@ -94,121 +158,79 @@
 
 		//controls = new THREE.OrbitControls( camera );//, renderer.domElement );
 		controls = new THREE.TrackballControls(camera, renderer.domElement);
-
 		controls.addEventListener( 'change', render );	
 
+		initSphereWorld();
 
+		var ambientLight = new THREE.AmbientLight(0xFFFF66);
+		scene.add(ambientLight);
 
-		var radius = radiusSphere;
+		addDatGui();
 
-		spheres = new Array(10);
-		brightness = new Array(10);
-		pos = new Array(10);
-		led = new Array(10);
+		noise.seed(Math.random());
 
+	}
+
+	function animate(){
+
+		render();
+		requestAnimationFrame( animate );
+		controls.update();
+
+	}
+
+	function visual_Noise2d() {
+		var div = 0.01;
 		for(var i=0;i<10;i++){
-			spheres[i] = new Array(i);
-			brightness[i] = new Array(i);
-			pos[i] = new Array(i);
-			led[i] = new Array(i);
-		}
-
-		var colorMat = new THREE.Color();
-		colorMat.setHSL(64/360,86/100,1);		
-		var sphereMaterial = new THREE.MeshBasicMaterial({color:colorMat});
-
-
-	    for(var i=0;i<10;i++){
 	     	for(var j=0;j<10;j++){
 
-	     		spheres[i][j] = new THREE.Mesh(new THREE.SphereGeometry(radius, radius, radius), sphereMaterial);
-	     		brightness[i][j] = 0;
-			    spheres[i][j].overdraw = true;
-			    spheres[i][j].position = new THREE.Vector3((i-4)*(spacingSphere + radius*2), (j-4)*(spacingSphere + radius*2), 1000);
-			    scene.add(spheres[i][j]);   
 
-	  		}
-	 	}	
+				spheres[i][j].position.z = maxtravelSphere*noise.perlin3(1,spheres[i][j].position.x*parameters.multiplier_1,spheres[i][j].position.y*parameters.multiplier_1)*Math.sin(dtime/10000 + spheres[i][j].position.x*spheres[i][j].position.y);
 
-	 	var ambientLight = new THREE.AmbientLight(0xFFFF66);
-      	scene.add(ambientLight);
+				brightness[i][j] = 0.1 + Math.abs(noise.perlin3(1,spheres[j][i].position.y*div,spheres[j][i].position.x*div)*Math.sin(dtime/1000 + spheres[i][j].position.x*spheres[i][j].position.y));
 
-      	addDatGui();
-
-      	noise.seed(Math.random());
-
-      }
-
-		function animate(){
-
-			render();
-			requestAnimationFrame( animate );
-			controls.update();
-
-		}
-
-
-		function visual_Sine() {
-			var dtime = Date.now() - startTime;
-			for(var i=0;i<10;i++){
-		     	for(var j=0;j<10;j++){
-				   	spheres[i][j].position.z = 100*Math.sin((j+1)*dtime/3000);
-		  			brightness[i][j] = Math.abs(spheres[i][j].position.z) / 100;
-		  			var colorMat = new THREE.Color();
-		  			colorMat.setHSL(64/360,86/100,0.3*brightness[i][j]+0.2);
-		  			spheres[i][j].material = new THREE.MeshBasicMaterial({color:colorMat});
-
-		  		}
-		 	}
-		}
-
-
-		function visual_Noise2d() {
-			var dtime = Date.now() - startTime;
-			var div = 0.01;
-			for(var i=0;i<10;i++){
-		     	for(var j=0;j<10;j++){
-
-
-					spheres[i][j].position.z = maxtravelSphere*noise.perlin3(1,spheres[i][j].position.x*parameters.multiplier_1,spheres[i][j].position.y*parameters.multiplier_1)*Math.sin(dtime/10000 + spheres[i][j].position.x*spheres[i][j].position.y);
-
-					brightness[i][j] = 0.1 + Math.abs(noise.perlin3(1,spheres[j][i].position.y*div,spheres[j][i].position.x*div)*Math.sin(dtime/1000 + spheres[i][j].position.x*spheres[i][j].position.y));
-
-					var colorMat = new THREE.Color();
-		  			colorMat.setHSL(64/360,86/100,0.5*brightness[i][j]+0.2);
-		  			spheres[i][j].material = new THREE.MeshBasicMaterial({color:colorMat});
-				}
+				var colorMat = new THREE.Color();
+	  			colorMat.setHSL(64/360,86/100,0.5*brightness[i][j]+0.2);
+	  			spheres[i][j].material = new THREE.MeshBasicMaterial({color:colorMat});
 			}
 		}
+	}
 
-		function render() {
-
-		 	var sphereData = { w: 10, h: 10, t: Date.now() - startTime, m1: parameters.multiplier_1, m2: parameters.multiplier_2, m3: parameters.multiplier_3, pos: pos, led:led };		 	
-		 	setPosAndLED(sphereData);
-
-		 	for( var x = 0; x < sphereData.w; x++ ){
-		 		for( var y=0; y < sphereData.h; y++ ){
-
-		 			spheres[x][y].position.z = maxtravelSphere * sphereData.pos[x][y];
-		 			brightness[x][y] = sphereData.led[x][y];
-
-		 			var colorMat = new THREE.Color();
-		  			colorMat.setHSL(64/360,86/100,0.5 * brightness[x][y] + 0.2);
-		  			spheres[x][y].material = new THREE.MeshBasicMaterial({color:colorMat});
-
-		 		}
-		 	}
-
-			renderer.render( scene, camera );
-
-		}
+	function render() {
 		
+		sphere_data.timestamp = current_time;
+		current_time = Date.now() - startTime;
+	 	var time_diff = Math.abs(current_time - sphere_data.timestamp);
+
+	 	var sphereData = { w: 10, h: 10, t: current_time, m1: parameters.multiplier_1, m2: parameters.multiplier_2, m3: parameters.multiplier_3, pos: pos, led:led };		 	
+	 	
+	 	setPosAndLED(sphereData);
 
 
+	 	for( var x = 0; x < sphereData.w; x++ ){
+	 		for( var y=0; y < sphereData.h; y++ ){
+
+	 			sphere_data.old_position[x][y] = spheres[x][y].position.z;
+	 			spheres[x][y].position.z = maxtravelSphere * sphereData.pos[x][y];
+	 			sphere_data.position[x][y] = spheres[x][y].position.z;
+	 			sphere_data.velocity[x][y] = Math.abs( sphere_data.position[x][y] - sphere_data.old_position[x][y])/time_diff;
+
+	 			brightness[x][y] = sphereData.led[x][y];
+
+	 			var colorMat = new THREE.Color();
+	  			colorMat.setHSL(64/360,86/100,0.5 * brightness[x][y] + 0.2);
+	  			spheres[x][y].material = new THREE.MeshBasicMaterial({color:colorMat});
+
+	 		}
+	 	}
+
+	 	movement_stats.linear_max = sphere_data.velocity[9][9];
+	 	movement_stats.height_min = sphere_data.position[9][9];
+
+		renderer.render( scene, camera );
+
+	}
+	
     </script>
-
-
- 
-
   </body>
 </html>
