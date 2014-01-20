@@ -1,0 +1,136 @@
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+        background-color: white;
+      }
+
+      #container{
+      	background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+  	<div id="container"></div>
+    <script src="scripts/three.min.js"></script>
+    <script src="scripts/TrackballControls.js"></script>
+    <script defer="defer">
+      
+      var startTime	= Date.now();
+      var camera, controls, scene, renderer;
+      var spheres;
+
+      // bulb radius in mm
+      var radiusSphere = 65;
+      // spacing between bulbs
+      var spacingSphere = 230;
+      // max travel length from start
+      var maxtravelSphere = 2450;
+
+      init();
+      animate();
+
+      function init(){
+
+		camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+		camera.position.z = 1000;
+
+		//controls
+		controls = new THREE.TrackballControls( camera );
+		controls.rotateSpeed = 1.0;
+		controls.zoomSpeed = 1.2;
+		controls.panSpeed = 0.8;
+		controls.noZoom = false;
+		controls.noPan = false;
+		controls.staticMoving = true;
+		controls.dynamicDampingFactor = 0.3;
+		controls.keys = [ 65, 83, 68 ];
+		controls.addEventListener( 'change', render );
+
+		//scene
+		scene = new THREE.Scene();
+		
+		//renderer
+		renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setClearColorHex( 0x000000, 1 );
+
+		// shadow casting test
+		renderer.shadowMapEnabled = true;
+		renderer.shadowMapSoft = true;
+
+		renderer.shadowCameraNear = 3;
+		renderer.shadowCameraFar = camera.far;
+		renderer.shadowCameraFov = 50;
+
+		renderer.shadowMapBias = 0.0039;
+		renderer.shadowMapDarkness = 0.5;
+		renderer.shadowMapWidth = 1024;
+		renderer.shadowMapHeight = 1024;
+		//
+
+		var container = document.getElementById( 'container' );
+		container.appendChild( renderer.domElement );
+
+		var radius = radiusSphere;
+		spheres = new Array(10);
+		brightness = new Array(10);
+		lights = new Array(10);
+		for(var i=0;i<10;i++){
+			spheres[i] = new Array(i);
+			brightness[i] = new Array(i);
+			lights[i] = new Array(i);
+		}
+
+		var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xfff, transparent: true, opacity: 1});
+
+
+	    for(var i=0;i<10;i++){
+	     	for(var j=0;j<10;j++){
+
+	     		spheres[i][j] = new THREE.Mesh(new THREE.SphereGeometry(radius, radius, radius), sphereMaterial);
+	     		brightness[i][j] = 0;
+			    spheres[i][j].overdraw = true;
+
+			    spheres[i][j].position = new THREE.Vector3((i-4)*(spacingSphere + radius*2), (j-4)*(spacingSphere + radius*2), 1000);
+			    scene.add(spheres[i][j]);   
+
+	  		}
+	 	}	
+
+      }
+
+    function animate(){
+
+    	render();
+    	requestAnimationFrame( animate );
+    	controls.update();
+
+    }
+
+	function render() {
+
+		var dtime = Date.now() - startTime;
+	    
+	    for(var i=0;i<10;i++){
+	     	for(var j=0;j<10;j++){
+			    
+			    spheres[i][j].position.z = 100*Math.sin((j+1)*dtime/3000);
+	  			brightness[i][j] = 1;//Math.abs(spheres[i][j].position.z) / 10;
+	  			//console.log(brightness[i][j]);
+	  			spheres[i][j].material = new THREE.MeshLambertMaterial({color: 0xfff, transparent: true, opacity: brightness[i][j]});
+
+	  			//spheres[i][j] = new THREE.Mesh(new THREE.SphereGeometry(20,20,20), sphereMaterial);
+	  			//lights[i][j].position.z = spheres[i][j].position.z;
+	  		}
+	 	}	
+
+		renderer.render( scene, camera );
+	}
+
+    </script>
+
+  </body>
+</html>
