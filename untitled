@@ -1,0 +1,19 @@
+
+
+
+function setPosAndLED(valueStore){
+
+	var w = valueStore.w;
+	var h = valueStore.h;
+	var t = valueStore.t;
+
+	for(x = 0; x < w; x++){
+		valueStore.pos[x][y] = 0;
+		valueStore.led[x][y] = 0;
+	}
+}
+
+
+
+
+module.exports.setPosAndLED = setPosAndLED;
