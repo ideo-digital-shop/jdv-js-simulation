@@ -11,12 +11,18 @@
       	background-color: white;
       }
     </style>
+
+	<script type='text/javascript' src='scripts/DAT.GUI.min.js'></script>
+  	<script src="scripts/three.min.js"></script>
+    <script src="scripts/TrackballControls.js"></script>
+    <script src="scripts/perlin.js"></script>
+
   </head>
   <body>
   	<div id="container"></div>
-    <script src="scripts/three.min.js"></script>
-    <script src="scripts/TrackballControls.js"></script>
+
     <script defer="defer">
+      
       
       var startTime	= Date.now();
       var camera, controls, scene, renderer;
@@ -32,23 +38,20 @@
       init();
       animate();
 
+		function addDatGui(){
+			var gui = new dat.GUI();
+			gui.add(camera.position, 'x', -5000,5000).step(5);
+			gui.add(camera.position, 'y', -5000,5000).step(5);
+			gui.add(camera.position, 'z', 0,10000).step(5);
+		}
+
       function init(){
 
 		camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-		camera.position.z = 1000;
-
-		//controls
-		controls = new THREE.TrackballControls( camera );
-		controls.rotateSpeed = 1.0;
-		controls.zoomSpeed = 1.2;
-		controls.panSpeed = 0.8;
-		controls.noZoom = false;
-		controls.noPan = false;
-		controls.staticMoving = true;
-		controls.dynamicDampingFactor = 0.3;
-		controls.keys = [ 65, 83, 68 ];
-		controls.addEventListener( 'change', render );
-
+		camera.position.x = 0;
+		camera.position.y = -5000;
+		camera.position.z = 1750;
+		
 		//scene
 		scene = new THREE.Scene();
 		
@@ -71,6 +74,18 @@
 		renderer.shadowMapHeight = 1024;
 		//
 
+
+		controls = new THREE.TrackballControls( camera );//, renderer.domElement );
+		controls.rotateSpeed = 1.0;
+		controls.zoomSpeed = 1.2;
+		controls.panSpeed = 0.8;
+		controls.noZoom = false;
+		controls.noPan = false;
+		controls.staticMoving = true;
+		controls.dynamicDampingFactor = 0.3;
+		controls.keys = [ 65, 83, 68 ];
+		controls.addEventListener( 'change', render );
+
 		var container = document.getElementById( 'container' );
 		container.appendChild( renderer.domElement );
 
@@ -84,7 +99,7 @@
 			lights[i] = new Array(i);
 		}
 
-		var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, transparent: true, opacity: 1});
+		var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xFFFFFF, transparent: true, opacity: 1});
 
 
 	    for(var i=0;i<10;i++){
@@ -100,40 +115,60 @@
 	  		}
 	 	}	
 
-	 	var ambientLight = new THREE.AmbientLight(0xffffff);
+	 	var ambientLight = new THREE.AmbientLight(0xFFFF66);
       	scene.add(ambientLight);
+
+      	addDatGui();
+
+      	noise.seed(Math.random());
 
       }
 
-    function animate(){
+		function animate(){
 
-    	render();
-    	requestAnimationFrame( animate );
-    	controls.update();
+			render();
+			requestAnimationFrame( animate );
+			controls.update();
 
-    }
+		}
 
-	function render() {
 
-		var dtime = Date.now() - startTime;
-	    
-	    for(var i=0;i<10;i++){
-	     	for(var j=0;j<10;j++){
-			    
-			    spheres[i][j].position.z = 100*Math.sin((j+1)*dtime/3000);
-	  			brightness[i][j] = Math.abs(spheres[i][j].position.z) / 10;
-	  			//console.log(brightness[i][j]);
-	  			spheres[i][j].material = new THREE.MeshLambertMaterial({color: 0xffffff, transparent: true, opacity: brightness[i][j]});
+		function visual_Sine() {
+			var dtime = Date.now() - startTime;
+			for(var i=0;i<10;i++){
+		     	for(var j=0;j<10;j++){
+				   	spheres[i][j].position.z = 100*Math.sin((j+1)*dtime/3000);
+		  			brightness[i][j] = Math.abs(spheres[i][j].position.z) / 100;
+		  			spheres[i][j].material = new THREE.MeshLambertMaterial({color: 0xffffff, transparent: true, opacity: brightness[i][j]});
+		  		}
+		 	}
+		}
 
-	  			//spheres[i][j] = new THREE.Mesh(new THREE.SphereGeometry(20,20,20), sphereMaterial);
-	  			//lights[i][j].position.z = spheres[i][j].position.z;
-	  		}
-	 	}	
+		function visual_Noise2d() {
+			var dtime = Date.now() - startTime;
+			var div = 0.01;
+			for(var i=0;i<10;i++){
+		     	for(var j=0;j<10;j++){
+					spheres[i][j].position.z = noise.perlin3(1,spheres[i][j].position.x*div,spheres[i][j].position.y*div)*(maxtravelSphere)*Math.sin(dtime/10000 + spheres[i][j].position.x*spheres[i][j].position.y);
 
-		renderer.render( scene, camera );
-	}
+					brightness[i][j] = 0.1 + Math.abs(noise.perlin3(1,spheres[j][i].position.y*div,spheres[j][i].position.x*div)*Math.sin(dtime/10000 + spheres[i][j].position.x*spheres[i][j].position.y));
+		  			spheres[i][j].material = new THREE.MeshLambertMaterial({color: 0xFFFFFF, transparent: true, opacity: brightness[i][j]});
+				}
+			}
+		}
+
+		function render() {
+		 	//visual_Sine();
+		 	visual_Noise2d();
+			renderer.render( scene, camera );
+		}
+		
+
 
     </script>
+
+
+ 
 
   </body>
 </html>
