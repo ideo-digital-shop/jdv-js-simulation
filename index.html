@@ -12,14 +12,21 @@
       }
     </style>
 
-	<script type='text/javascript' src='scripts/DAT.GUI.min.js'></script>
-  	<script src="scripts/three.min.js"></script>
-    <script src="scripts/TrackballControls.js"></script>
-    <script src="scripts/perlin.js"></script>
+	<script src='js/DAT.GUI.min.js'></script>
+	<script src="js/Three.js"></script>
+	<script src="js/Detector.js"></script>
+	<script src="js/Stats.js"></script>
+	<script src="js/OrbitControls.js"></script>
+	<script src="js/THREEx.KeyboardState.js"></script>
+	<script src="js/THREEx.FullScreen.js"></script>
+	<script src="js/THREEx.WindowResize.js"></script>
+    
+    <script src="js/perlin.js"></script>
+    
 
   </head>
   <body>
-  	<div id="container"></div>
+  	<div id="ThreeJS"></div>
 
     <script defer="defer">
       
@@ -56,8 +63,15 @@
 		scene = new THREE.Scene();
 		
 		//renderer
-		renderer = new THREE.WebGLRenderer();
+		if ( Detector.webgl )
+                renderer = new THREE.WebGLRenderer( {antialias:true} );
+        else
+                renderer = new THREE.CanvasRenderer(); 
+
 		renderer.setSize(window.innerWidth, window.innerHeight);
+		container = document.getElementById('ThreeJS');
+		container.appendChild(renderer.domElement);
+
 		renderer.setClearColorHex( 0x000000, 1 );
 
 		// shadow casting test
@@ -74,7 +88,8 @@
 		renderer.shadowMapHeight = 1024;
 		//
 
-
+		controls = new THREE.OrbitControls( camera, renderer.domElement );
+/*
 		controls = new THREE.TrackballControls( camera );//, renderer.domElement );
 		controls.rotateSpeed = 1.0;
 		controls.zoomSpeed = 1.2;
@@ -84,11 +99,12 @@
 		controls.staticMoving = true;
 		controls.dynamicDampingFactor = 0.3;
 		controls.keys = [ 65, 83, 68 ];
+
 		controls.addEventListener( 'change', render );
 
 		var container = document.getElementById( 'container' );
 		container.appendChild( renderer.domElement );
-
+*/
 		var radius = radiusSphere;
 		spheres = new Array(10);
 		brightness = new Array(10);
