@@ -49,11 +49,6 @@
 	sphere_data.spacingSphere = 230;
 	sphere_data.maxtravelSphere = 2450;
 
-	var radiusSphere = 65;
-	// spacing between bulbs
-	var spacingSphere = 230;
-	// max travel length from start
-	var maxtravelSphere = 2450;
 
 	init();
 	animate();
@@ -173,35 +168,21 @@
 
 	function animate(){
 
-		render();
-		requestAnimationFrame( animate );
+		
+		setTimeout( function() {
+        	requestAnimationFrame( animate );
+    	}, 1000 / 60 );
+
+    	render();
+
 		controls.update();
 
-	}
-
-	function visual_Noise2d() {
-		var div = 0.01;
-		for(var i=0;i<10;i++){
-	     	for(var j=0;j<10;j++){
-
-
-				spheres[i][j].position.z = maxtravelSphere*noise.perlin3(1,spheres[i][j].position.x*parameters.multiplier_1,spheres[i][j].position.y*parameters.multiplier_1)*Math.sin(dtime/10000 + spheres[i][j].position.x*spheres[i][j].position.y);
-
-				brightness[i][j] = 0.1 + Math.abs(noise.perlin3(1,spheres[j][i].position.y*div,spheres[j][i].position.x*div)*Math.sin(dtime/1000 + spheres[i][j].position.x*spheres[i][j].position.y));
-
-				var colorMat = new THREE.Color();
-	  			colorMat.setHSL(64/360,86/100,0.5*brightness[i][j]+0.2);
-	  			spheres[i][j].material = new THREE.MeshBasicMaterial({color:colorMat});
-			}
-		}
 	}
 
 	function render() {
 		
 		sphere_data.timestamp = current_time;
-		current_time = Date.now() - startTime;
-	 	var time_diff = Math.abs(current_time - sphere_data.timestamp);
-
+		
 	 	var sphereData = { w: 10, h: 10, t: current_time, m1: parameters.multiplier_1, m2: parameters.multiplier_2, m3: parameters.multiplier_3, pos: pos, led:led };		 	
 	 	
 	 	setPosAndLED(sphereData);
@@ -211,9 +192,13 @@
 	 		for( var y=0; y < sphereData.h; y++ ){
 
 	 			sphere_data.old_position[x][y] = spheres[x][y].position.z;
-	 			spheres[x][y].position.z = maxtravelSphere * sphereData.pos[x][y];
+	 			spheres[x][y].position.z = sphere_data.maxtravelSphere * sphereData.pos[x][y];
 	 			sphere_data.position[x][y] = spheres[x][y].position.z;
-	 			sphere_data.velocity[x][y] = Math.abs( sphere_data.position[x][y] - sphere_data.old_position[x][y])/time_diff;
+
+	 			current_time = Date.now() - startTime;
+			 	var time_diff = Math.abs(current_time - sphere_data.timestamp);
+
+	 			sphere_data.velocity[x][y] = Math.abs( 0.0393701*(sphere_data.position[x][y] - sphere_data.old_position[x][y]))/(1/60);
 
 	 			brightness[x][y] = sphereData.led[x][y];
 
@@ -221,11 +206,15 @@
 	  			colorMat.setHSL(64/360,86/100,0.5 * brightness[x][y] + 0.2);
 	  			spheres[x][y].material = new THREE.MeshBasicMaterial({color:colorMat});
 
+	  			if ( (sphere_data.velocity[x][y] > movement_stats.linear_max) && (current_time>5000)) {movement_stats.linear_max = sphere_data.velocity[x][y];
+	  			}
+
 	 		}
 	 	}
 
-	 	movement_stats.linear_max = sphere_data.velocity[9][9];
-	 	movement_stats.height_min = sphere_data.position[9][9];
+
+	 	movement_stats.height_max = sphere_data.position[0][0];
+
 
 		renderer.render( scene, camera );
 
