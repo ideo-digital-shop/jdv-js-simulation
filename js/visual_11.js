@@ -20,8 +20,8 @@ function setPosAndLED(valueStore){
 			valueStore.pos[x][y] *= -(1 + Math.sin(t/timeMultiplier))/2;
 			valueStore.pos[x][y] += 1;
 			//reflect horizontally
-			valueStore.pos[(w-1)-x][y] = valueStore.pos[y][x];
-			valueStore.pos[x][(h-1)-y] = valueStore.pos[y][x];
+			valueStore.pos[(w-1)-x][y] = valueStore.pos[x][y];
+			valueStore.pos[x][(h-1)-y] = valueStore.pos[x][y];
 			valueStore.pos[(w-1)-x][(h-1)-y] = valueStore.pos[x][y];
 
 			valueStore.led[x][y] = 1-valueStore.pos[x][y]
