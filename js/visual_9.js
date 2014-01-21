@@ -24,7 +24,7 @@ function setPosAndLED(valueStore){
 			valueStore.pos[x][(h-1)-y] = valueStore.pos[x][y];
 			valueStore.pos[(w-1)-x][(h-1)-y] = valueStore.pos[x][y];
 
-			valueStore.led[x][y] = valueStore.pos[x][y]
+			valueStore.led[x][y] = 1-valueStore.pos[x][y]
 			valueStore.led[(w-1)-x][y] = valueStore.led[x][y];
 			valueStore.led[x][(h-1)-y] = valueStore.led[x][y];
 			valueStore.led[(w-1)-x][(h-1)-y] = valueStore.led[x][y];
