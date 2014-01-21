@@ -43,13 +43,14 @@
 	var current_time;
 	var movement_stats;
 	var sphere_data = {};
+	var static_arr = new Array(10);
 
 	// bulb radius in mm
 	sphere_data.radiusSphere = 65;
 	sphere_data.spacingSphere = 230;
 	sphere_data.maxtravelSphere = 2450;
 
-	var sphereData = { w: 10, h: 10, t: current_time, pos: pos, led:led };		 	
+	var sphereData = { w: 10, h: 10, t: current_time, pos: pos, led:led, static_arr:static_arr };		 	
 	 	
 
 	init();
@@ -188,6 +189,7 @@
 		sphereData.t = current_time;
 		sphereData.pos = pos;
 		sphereData.led = led;
+
 
 	 	setPosAndLED(sphereData);
 

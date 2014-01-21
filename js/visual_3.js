@@ -3,9 +3,9 @@ function setPosAndLED(valueStore){
 	var w = valueStore.w;
 	var h = valueStore.h;
 	var t = valueStore.t;
-	var m1 = valueStore.m1;
-	var m2 = valueStore.m2;
-	var m3 = valueStore.m3;
+	var m1 = 0.01;
+	var m2 = 0.01;
+	var m3 = 0.01;
 
 	var timeMultiplier = 10000;
 		
