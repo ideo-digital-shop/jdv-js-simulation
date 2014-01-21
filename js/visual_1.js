@@ -12,7 +12,10 @@ function setPosAndLED(valueStore){
 
 			//m1 = 0.01
 			//m1 = 0.033
-			valueStore.pos[x][y] = noise.perlin3(1, (x+1) * m1, (y+1) * m1) * Math.sin( t/10000 + (x) * (y));
+
+			
+
+			valueStore.pos[x][y] = (1 + noise.perlin3(1, (x+1) * m1, (y+1) * m1) * Math.sin( t/10000 + (x) * (y)))/2;
 			valueStore.led[x][y] = valueStore.pos[x][y];
 			//valueStore.led[x][y] = 0.1 + Math.abs( noise.perlin3(1, y * m1, x * m1) * Math.sin( t/10000 + x * y) );	
 

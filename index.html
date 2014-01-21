@@ -22,7 +22,7 @@
 	<script src="js/THREEx.FullScreen.js"></script>
 	<script src="js/THREEx.WindowResize.js"></script>
     <script src="js/Tween.js"></script>
-    <script src="js/visual_5.js"></script>
+    <script src="js/visual_9.js"></script>
     <script src="js/perlin.js"></script>
     
 
@@ -66,7 +66,7 @@
 		movement_stats =
 			{
 				height_max: 0.01,
-				height_min: 0.01,
+				height_min: 10.01,
 				linear_max: 0.01,
 				linear_min: 0.01
 			}
@@ -131,7 +131,7 @@
 
 	function init(){
 
-		camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+		camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100000);
 		camera.position.x = 0;
 		camera.position.y = -5000;
 		camera.position.z = 1750;
@@ -209,12 +209,17 @@
 	  			if ( (sphere_data.velocity[x][y] > movement_stats.linear_max) && (current_time>5000)) {movement_stats.linear_max = sphere_data.velocity[x][y];
 	  			}
 
+	  			if ( (sphereData.pos[x][y] > movement_stats.height_max) && (current_time>5000)) {
+	  				movement_stats.height_max = sphereData.pos[x][y];
+	  			}
+
+
+	  			if ( (sphereData.pos[x][y] < movement_stats.height_min) && (current_time>5000)) {
+	  				movement_stats.height_min = sphereData.pos[x][y];
+	  			}
+
 	 		}
 	 	}
-
-
-	 	movement_stats.height_max = sphere_data.position[0][0];
-
 
 		renderer.render( scene, camera );
 
