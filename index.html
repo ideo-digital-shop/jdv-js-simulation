@@ -44,13 +44,18 @@
 	var movement_stats;
 	var sphere_data = {};
 	var static_arr = new Array(10);
+	var remote_init = false;
 
-	// bulb radius in mm
+	for(var i=0;i<10;i++){
+		static_arr[i] = new Array(i);
+	}
+
+	// dimension in mm
 	sphere_data.radiusSphere = 65;
 	sphere_data.spacingSphere = 230;
 	sphere_data.maxtravelSphere = 2450;
 
-	var sphereData = { w: 10, h: 10, t: current_time, pos: pos, led:led, static_arr:static_arr };		 	
+	var sphereData = { w: 10, h: 10, t: current_time, pos: pos, led:led, static_arr:static_arr, remote_init: remote_init };		 	
 	 	
 
 	init();
@@ -60,12 +65,6 @@
 		var gui = new dat.GUI();
 		gui.autoListen = true;
 
-		 parameters = 
-			{
-			multiplier_1: 0.01,
-			multiplier_2: 0.01,
-			multiplier_3: 0.01
-			};
 		movement_stats =
 			{
 				height_max: 0.01,
@@ -77,9 +76,6 @@
 		gui.add(camera.position, 'x', -5000,5000).step(5);
 		gui.add(camera.position, 'y', -5000,5000).step(5);
 		gui.add(camera.position, 'z', 0,10000).step(5);
-		multiplier_1 = gui.add(parameters,'multiplier_1',0.0,1.0).step(0.001);
-		multiplier_2 = gui.add(parameters,'multiplier_2',0.0,1.0).step(0.001);
-		multiplier_3 = gui.add(parameters,'multiplier_3',0.0,1.0).step(0.001);
 		gui.add(movement_stats,'linear_max').listen();
 		gui.add(movement_stats,'linear_min').listen();
 		gui.add(movement_stats,'height_max').listen();
@@ -189,7 +185,6 @@
 		sphereData.t = current_time;
 		sphereData.pos = pos;
 		sphereData.led = led;
-
 
 	 	setPosAndLED(sphereData);
 

@@ -1,4 +1,3 @@
-//awesome sinusoidal wave that finds harmonics
 function setPosAndLED(valueStore){
 
 	var w = valueStore.w;
@@ -17,9 +16,6 @@ function setPosAndLED(valueStore){
 		high: 0.6,
 		diff: 0
 	};
-
-		
-
 
 	threshold.diff = threshold.high - threshold.low;
 
@@ -72,8 +68,6 @@ function setPosAndLED(valueStore){
 
 		for(var x = 0; x < w; x++){
 			for(var y = 0; y < h; y++){
-
-				//valueStore.pos[x][y] = (1 + noise.perlin3(1, (x*y+10)* m1, ((x+3)*y+1) * m1) * Math.cos( t/10000 + ((x+1)+(y+4))))/2;
 				
 				valueStore.pos[x][y] = (1 + noise.simplex2(x,y))/2 * (1+Math.sin((y/h)*t/10000 + ((x/w)*(y/h)) ))/2
 				valueStore.led[x][y] = 0.2;
