@@ -22,7 +22,7 @@
 	<script src="js/THREEx.FullScreen.js"></script>
 	<script src="js/THREEx.WindowResize.js"></script>
     <script src="js/Tween.js"></script>
-    <script src="js/visual_12.js"></script>
+    <script src="js/visual_15.js"></script>
     <script src="js/perlin.js"></script>
     
 
@@ -49,6 +49,8 @@
 	sphere_data.spacingSphere = 230;
 	sphere_data.maxtravelSphere = 2450;
 
+	var sphereData = { w: 10, h: 10, t: current_time, pos: pos, led:led };		 	
+	 	
 
 	init();
 	animate();
@@ -183,10 +185,11 @@
 		
 		sphere_data.timestamp = current_time;
 		
-	 	var sphereData = { w: 10, h: 10, t: current_time, m1: parameters.multiplier_1, m2: parameters.multiplier_2, m3: parameters.multiplier_3, pos: pos, led:led };		 	
-	 	
-	 	setPosAndLED(sphereData);
+		sphereData.t = current_time;
+		sphereData.pos = pos;
+		sphereData.led = led;
 
+	 	setPosAndLED(sphereData);
 
 	 	for( var x = 0; x < sphereData.w; x++ ){
 	 		for( var y=0; y < sphereData.h; y++ ){
