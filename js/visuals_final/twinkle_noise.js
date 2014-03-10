@@ -22,7 +22,7 @@
 		var m2 = 0.03;
 		var m3 = 0.01;
 
-		var timeMultiplier = 500000;
+		var timeMultiplier = 400;
 
 		if(!bulb_init){
 			populateStaticArray(w,h,static_arr);
@@ -36,25 +36,14 @@
 		}
 
 
-
-		for(var x=0; x<5; x++){
-			for(var y=0; y<5; y++){
-
-			valueStore.pos[x][y] = (1+Math.sin( random_arr[x][y] * t/timeMultiplier ))/2 * ( 1 + (x/4)*Math.sin((( y + 1 ) * h) * t/timeMultiplier))/ 2;
-
-			//reflect horizontally
-			valueStore.pos[(w-1)-x][y] = valueStore.pos[x][y];
-			valueStore.pos[x][(h-1)-y] = valueStore.pos[x][y];
-			valueStore.pos[(w-1)-x][(h-1)-y] = valueStore.pos[x][y];
-
-			valueStore.led[x][y] = static_arr[x][y]*(1+Math.sin(static_arr_2[x][y]*t/timeMultiplier)/2);
-			valueStore.led[(w-1)-x][y] = valueStore.led[x][y];
-			valueStore.led[x][(h-1)-y] = valueStore.led[x][y];
-			valueStore.led[(w-1)-x][(h-1)-y] = valueStore.led[x][y];
+		for(var x = 0; x < w; x++){
+			for(var y = 0; y < h; y++){
+				valueStore.pos[x][y] = (1+noise.perlin3(1, random_arr[x][y], random_arr[y][x]))/2 * (1+Math.sin( random_arr[x][y] * t/10000 ))/2;
+				valueStore.led[x][y] = static_arr[x][y]*(1+Math.sin(static_arr_2[x][y]*t/timeMultiplier)/2);
 
 
+			}
 		}
-	}
 
 	}
 

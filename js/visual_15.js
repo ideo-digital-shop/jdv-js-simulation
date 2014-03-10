@@ -35,7 +35,7 @@ function setPosAndLED(valueStore){
 		for(var x=0; x<5; x++){
 			for(var y=0; y<5; y++){
 
-				valueStore.pos[x][y] = (1 + noise.perlin3(1, (x+1) * m1, (y+1) * m1))/2 * (1+Math.sin( t/(static_arr[x][y]*10000) + (x)))/2;
+				valueStore.pos[x][y] = (1 + noise.perlin3(1, static_arr[x][y], (y+1) * m1))/2 * (1+Math.sin(t/(static_arr[x][y]*25000) )/2);
 				valueStore.pos[(w-1)-x][y] = valueStore.pos[x][y];
 				valueStore.pos[x][(h-1)-y] = valueStore.pos[x][y];
 				valueStore.pos[(w-1)-x][(h-1)-y] = valueStore.pos[x][y];

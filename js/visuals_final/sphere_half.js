@@ -1,40 +1,64 @@
+(function(module){
+
+	var currentSide = 0;
+	bulb_led_arr = new Array(10);
+
+	for(var a = 0; a < 10; a++){
+		bulb_led_arr[a] = new Array(10);
+	}
+
+	bulb_init = false;
+
+	var height = 1;
+	
+
+
 //awesome sinusoidal wave that finds harmonics
 function setPosAndLED(valueStore){
 
 	var w = valueStore.w;
 	var h = valueStore.h;
 	var t = valueStore.t;
+	
 	var m1 = 0.01;
 	var m2 = 0.01;
 	var m3 = 0.01;
 
 	var timeMultiplier = 5000;
-
-	var final_val;
-
+		
+	if(!bulb_init){
+		for(var x = 0; x < w; x++){
+			for(var y = 0; y < h; y++){
+			}
+		}
+		bulb_init = true;
+	}
 
 	for(var x=0; x<5; x++){
 		for(var y=0; y<5; y++){
 
-
-			valueStore.pos[x][y] = ( x / 4 ) * Math.sin(( y / 4 ));
-			valueStore.pos[x][y] *= -(1 + Math.sin(t/timeMultiplier))/2;
+			var zPos = Math.sqrt(Math.pow(0.5,2) - Math.pow((x/8)-0.5,2) - Math.pow((y/8)-0.5,2));
+			valueStore.pos[x][y] = zPos;
+			valueStore.pos[x][y] *= -1;
 			valueStore.pos[x][y] += 1;
-			//reflect horizontally
+
 			valueStore.pos[(w-1)-x][y] = valueStore.pos[x][y];
 			valueStore.pos[x][(h-1)-y] = valueStore.pos[x][y];
 			valueStore.pos[(w-1)-x][(h-1)-y] = valueStore.pos[x][y];
 
-			valueStore.led[x][y] = 1-valueStore.pos[x][y]
+
+
+			valueStore.led[x][y] = 1-valueStore.pos[x][y];
 			valueStore.led[(w-1)-x][y] = valueStore.led[x][y];
 			valueStore.led[x][(h-1)-y] = valueStore.led[x][y];
 			valueStore.led[(w-1)-x][(h-1)-y] = valueStore.led[x][y];
 
+			
 
 		}
 	}
 
-
+	
 }
 
 if(module){
@@ -42,3 +66,6 @@ if(module){
 	module.exports.setPosAndLED = setPosAndLED;
 
 }
+
+})(module);
+

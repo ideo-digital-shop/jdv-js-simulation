@@ -10,8 +10,6 @@ function setPosAndLED(valueStore){
 	for(var x = 0; x < w; x++){
 		for(var y = 0; y < h; y++){
 
-			//m1 = 0.01
-			//m1 = 0.033
 			var mult = 1;
 			if ( x % 2 == true ) {
 				mult = -1; 
