@@ -22,7 +22,7 @@
 		var m2 = 0.03;
 		var m3 = 0.01;
 
-		var timeMultiplier = 400;
+		var timeMultiplier = 2000;
 
 		if(!bulb_init){
 			populateStaticArray(w,h,static_arr);
@@ -49,7 +49,7 @@
 
 		for(var x=0; x<5; x++){
 			for(var y=0; y<5; y++){
-		
+
 				var sphereVolume = Math.sqrt(Math.pow(sinValue,2) - Math.pow((x/8)-sinValue,2) - Math.pow((y/8)-sinValue,2));
 				if((valueStore.pos[x][y]>=0.5-sphereVolume) && (valueStore.pos[x][y]<=0.5+sphereVolume)){
 					valueStore.led[x][y] = 1;
