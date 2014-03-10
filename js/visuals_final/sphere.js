@@ -28,7 +28,7 @@ function setPosAndLED(valueStore){
 			}
 
 			var zPos = Math.sqrt(Math.pow(0.5,2) - Math.pow((x/8)-0.5,2) - Math.pow((y/8)-0.5,2));
-			valueStore.pos[x][y] = mult*zPos;
+			valueStore.pos[x][y] = mult*zPos + 0.5;
 			valueStore.pos[x][y] *= (1+ Math.sin(t/timeMultiplier))/2;
 			valueStore.pos[(w-1)-x][y] = valueStore.pos[x][y];
 			valueStore.pos[x][(h-1)-y] = valueStore.pos[x][y];
