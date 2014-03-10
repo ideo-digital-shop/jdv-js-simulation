@@ -55,8 +55,8 @@ function setPosAndLED(valueStore){
 			else if(x>=1 && y>=1){
 				valueStore.pos[x][y] =  1/4;
 			}
-			valueStore.pos[x][y] *= -1;
-			valueStore.pos[x][y] += 1;
+			//valueStore.pos[x][y] *= -1;
+			//valueStore.pos[x][y] += 1;
 
 			valueStore.pos[(w-1)-x][y] = valueStore.pos[x][y];
 			valueStore.pos[x][(h-1)-y] = valueStore.pos[x][y];

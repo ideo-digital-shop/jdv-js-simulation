@@ -39,7 +39,10 @@
 		for(var x = 0; x < w; x++){
 			for(var y = 0; y < h; y++){
 				valueStore.pos[x][y] = (1+noise.perlin3(1, random_arr[x][y], random_arr[y][x]))/2 * (1+Math.sin( random_arr[x][y] * t/10000 ))/2;
-				valueStore.led[x][y] = static_arr[x][y]*(1+Math.sin(static_arr_2[x][y]*t/timeMultiplier)/2);
+				
+				var ledPos = (1 + Math.asin(Math.sin(t/timeMultiplier)))/2;
+				valueStore.led[x][y] = 1-(Math.abs(valueStore.pos[x][y] - ledPos));
+				//valueStore.led[x][y] = static_arr[x][y]*(1+Math.sin(static_arr_2[x][y]*t/timeMultiplier)/2);
 			}
 		}
 
