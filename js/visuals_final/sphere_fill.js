@@ -22,7 +22,7 @@
 		var m2 = 0.03;
 		var m3 = 0.01;
 
-		var timeMultiplier = 2000;
+		var timeMultiplier = 5000;
 
 		if(!bulb_init){
 			populateStaticArray(w,h,static_arr);
@@ -38,7 +38,7 @@
 
 		for(var x = 0; x < w; x++){
 			for(var y = 0; y < h; y++){
-				valueStore.pos[x][y] = (1+noise.perlin3(1, random_arr[x][y], random_arr[y][x]))/2 * (1+Math.sin( random_arr[x][y] * t/10000 ))/2;
+				valueStore.pos[x][y] = (1+noise.perlin3((t/timeMultiplier), random_arr[x][y], random_arr[y][x]))/2;// * (1+Math.sin( random_arr[x][y] * t/1000 ))/2;
 			}
 		}
 
@@ -47,9 +47,9 @@
 		for(var x=0; x<5; x++){
 			for(var y=0; y<5; y++){
 
-				var sphereVolume = Math.sqrt(Math.pow(sinValue,2) - Math.pow((x/8)-sinValue,2) - Math.pow((y/8)-sinValue,2));
-				var dist = Math.sqrt(Math.pow((x-4.5)/9,2) + Math.pow((y-4.5)/9,2) + Math.pow((valueStore.pos[x][y]),2));
-				if (dist>sinValue){
+				//var sphereVolume = Math.sqrt(Math.pow(sinValue,2) - Math.pow((x/8)-sinValue,2) - Math.pow((y/8)-sinValue,2));
+				var dist = Math.sqrt(Math.pow((x-4.5)/9,2) + Math.pow((y-4.5)/9,2) + Math.pow((valueStore.pos[x][y])-0.5,2));
+				if (dist<=sinValue){
 					valueStore.led[x][y] = 1;
 				}
 				else{
