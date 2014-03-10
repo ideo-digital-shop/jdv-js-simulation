@@ -35,23 +35,21 @@
 
 		}
 
-		var sinValue = (1+Math.sin(t/timeMultiplier))/4;
-
-		console.log(sinValue);
 
 		for(var x = 0; x < w; x++){
 			for(var y = 0; y < h; y++){
-				
 				valueStore.pos[x][y] = (1+noise.perlin3(1, random_arr[x][y], random_arr[y][x]))/2 * (1+Math.sin( random_arr[x][y] * t/10000 ))/2;
-
 			}
 		}
+
+		var sinValue = (1+Math.sin(t/timeMultiplier))/4;
 
 		for(var x=0; x<5; x++){
 			for(var y=0; y<5; y++){
 
 				var sphereVolume = Math.sqrt(Math.pow(sinValue,2) - Math.pow((x/8)-sinValue,2) - Math.pow((y/8)-sinValue,2));
-				if((valueStore.pos[x][y]>=0.5-sphereVolume) && (valueStore.pos[x][y]<=0.5+sphereVolume)){
+				var dist = Math.sqrt(Math.pow((x-4.5)/9,2) + Math.pow((y-4.5)/9,2) + Math.pow((valueStore.pos[x][y]),2));
+				if (dist>sinValue){
 					valueStore.led[x][y] = 1;
 				}
 				else{
