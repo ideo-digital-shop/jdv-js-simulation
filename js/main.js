@@ -104,7 +104,7 @@ function init(){
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100000);
   camera.position.x = 0;
   camera.position.y = -5000;
-  camera.position.z = 1750;
+  camera.position.z = 5000;
 
   //scene
   scene = new THREE.Scene();
@@ -157,6 +157,10 @@ function render() {
   sphereData.pos = pos;
   sphereData.led = led;
 
+  if(!module || !module.exports || !module.exports.setPosAndLED){
+    console.log("Animation not loaded yet.");
+    return;
+  }
   module.exports.setPosAndLED(sphereData);
 
   for( var x = 0; x < sphereData.w; x++ ){
