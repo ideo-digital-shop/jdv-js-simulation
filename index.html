@@ -1,15 +1,32 @@
 <html>
 <head>
 <style>
-body {
-  margin: 0px;
-  padding: 0px;
-  background-color: white;
-}
+	body {
+	  margin: 0px;
+	  padding: 0px;
+	  background-color: black;
+	}
+	canvas { 
+		margin: 0;
+	    position: absolute;
+	    top: 0;
+	    bottom: 0;
+	    left: 40%;
+	    right: 0;
+	}
 
-#container{
-  background-color: white;
-}
+	#container{
+	  	background-color: black;
+	}
+
+	#editor { 
+	    margin: 0;
+	    position: absolute;
+	    top: 22;
+	    bottom: 0;
+	    left: 0;
+	    right: 60%;
+	}
 </style>
 
 <script src='js/3JS/DAT.GUI.min.js'></script>
@@ -22,11 +39,22 @@ body {
 <script src="js/3JS/THREEx.FullScreen.js"></script>
 <script src="js/3JS/THREEx.WindowResize.js"></script>
 <script src="js/3JS/Tween.js"></script>
+<script src="http://js.leapmotion.com/leap-0.6.1.min.js"></script>
+<script src="http://js.leapmotion.com/leap-plugins-0.1.6.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/main.js" defer></script>
+<script src="js/AceControl.js" defer></script>
 <script src="visuals/visuals_final/sphere_fill.js" defer></script>
 <script src="js/visual_helpers/perlin.js"></script>
 
 </head>
-<body> <div id="ThreeJS"></div>
+<body> 
+<button type="button" onclick="module.exports.runCode();">Visualize!</button>
+<div id="editor">function setPosAndLED(valueStore){
+
+  // Your Code Goes Here!
+  
+}</div>
+<div id="ThreeJS"></div>
 </body>
 </html>

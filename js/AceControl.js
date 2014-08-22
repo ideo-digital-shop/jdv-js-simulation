@@ -1,11 +1,18 @@
 (function(module){
+
+	var editor;
+
+	init();
+
+	function init(){
+		editor = ace.edit("editor");
+		editor.setTheme("ace/theme/monokai");
+		editor.getSession().setMode("ace/mode/javascript");
+
+	}
     function runCode(doc){
-
-    	//js eval
-    	
-    	
-    
-
+		//js eval
+		eval("(function(module){" + editor.getValue() + " if(module){module.exports.setPosAndLED = setPosAndLED;}})(module);");
     }
     // does code conform to JS standards?
     function checkCode(doc){
